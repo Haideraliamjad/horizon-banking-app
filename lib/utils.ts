@@ -197,13 +197,7 @@ export const getTransactionStatus = (date: Date) => {
 export const authFormSchema = (type: string) =>
   z.object({
     email: z.string().email(),
-    password: z
-      .string()
-      .min(8, "Password must be 8 characters long")
-      .regex(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Password must contain at least one special character"
-      ),
+    password: z.string().min(8, "Password must be 8 characters long"),
     // for signup
     firstName:
       type === "sign-in"
@@ -225,6 +219,16 @@ export const authFormSchema = (type: string) =>
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "postal code is required" }).max(6),
-    dob: type === "sign-in" ? z.string().optional() : z.date(),
-    snn: type === "sign-in" ? z.string().optional() : z.string(),
+    dob:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string({ message: "date of birth is required" }),
+    snn:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string({ message: "ssn is required" }),
+    city:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string({ message: "city is required" }),
   });

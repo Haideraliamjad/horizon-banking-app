@@ -10,13 +10,15 @@ import { Form } from "@/components/ui/form";
 import CustomInput from "./CustomInput";
 import { authFormSchema } from "../lib/utils";
 import { Loader2 } from "lucide-react";
+import { signIn, signUp } from "../lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const formSchema = authFormSchema(type);
-  // 1. Define your form.
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -25,14 +27,16 @@ const AuthForm = ({ type }: { type: string }) => {
     },
   });
 
-  // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
       if (type === "sign-up") {
-        // sign up with appwrite and create plaid token
+        const response = await signUp(values);
+        console.log(response);
       }
       if (type === "sign-in") {
+        await signIn(values);
+        router.push("/");
       }
     } catch (error) {
       console.log(error);
@@ -95,6 +99,13 @@ const AuthForm = ({ type }: { type: string }) => {
                     name={"address"}
                     placeholder={"Enter your specific address"}
                     label={"Address"}
+                    type="text"
+                  />
+                  <CustomInput
+                    control={form.control}
+                    name={"city"}
+                    placeholder={"Enter your city"}
+                    label={"City"}
                     type="text"
                   />
                   <div className="flex gap-4">

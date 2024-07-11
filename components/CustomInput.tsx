@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { authFormSchema } from "../lib/utils";
 import z from "zod";
 import { Control, FieldPath } from "react-hook-form";
-
+import { useId } from "react";
 const formSchema = authFormSchema("sign-up");
 
 interface CustomInputProps {
@@ -26,6 +26,7 @@ const CustomInput = ({
   placeholder,
   type,
 }: CustomInputProps) => {
+  const id = useId();
   return (
     <FormField
       control={control}
@@ -39,7 +40,9 @@ const CustomInput = ({
                 type={type}
                 placeholder={placeholder}
                 className="input-class"
+                autoComplete={type === "password" ? "false" : "true"}
                 {...field}
+                id={id}
               />
             </FormControl>
             <FormMessage className="form-message mt-2"></FormMessage>
