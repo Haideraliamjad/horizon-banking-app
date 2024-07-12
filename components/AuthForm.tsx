@@ -12,19 +12,17 @@ import { authFormSchema } from "../lib/utils";
 import { Loader2 } from "lucide-react";
 import { signIn, signUp } from "../lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
   const router = useRouter();
   const formSchema = authFormSchema(type);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -32,14 +30,21 @@ const AuthForm = ({ type }: { type: string }) => {
       setIsLoading(true);
       if (type === "sign-up") {
         const response = await signUp(values);
-        console.log(response);
-      }
-      if (type === "sign-in") {
-        await signIn(values);
         router.push("/");
       }
-    } catch (error) {
-      console.log(error);
+      if (type === "sign-in") {
+        const response = await signIn(values);
+        if (response.code === 401) {
+          toast({
+            title: response.message,
+            variant: "destructive",
+          });
+        } else {
+          router.push("/");
+        }
+      }
+    } catch (error: any) {
+      console.log(error.response.code);
     } finally {
       setIsLoading(false);
     }

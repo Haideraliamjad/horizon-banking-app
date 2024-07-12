@@ -8,13 +8,19 @@ import { cookies } from "next/headers";
 export const signIn = async (userData: z.infer<typeof formSchema>) => {
   try {
     const { account } = await createAdminClient();
-    const response = await account.createEmailPasswordSession(
+    const session = await account.createEmailPasswordSession(
       userData.email,
       userData.password
     );
-    return parseStringify(response);
+    cookies().set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+    return parseStringify(session);
   } catch (error) {
-    console.error(error);
+    return error.response;
   }
 };
 
