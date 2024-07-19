@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 import { signIn, signUp } from "../lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
@@ -28,9 +29,22 @@ const AuthForm = ({ type }: { type: string }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
+
       if (type === "sign-up") {
-        const response = await signUp(values);
-        router.push("/");
+        const userData: any = {
+          firstName: values.firstName!,
+          lastName: values.lastName!,
+          address1: values.address1!,
+          city: values.city,
+          state: values.state,
+          postalCode: values.postalCode,
+          dateOfBirth: values.dateOfBirth!,
+          ssn: values.ssn!,
+          email: values.email,
+          password: values.password,
+        };
+        const newUser = await signUp(userData);
+        setUser(newUser);
       }
       if (type === "sign-in") {
         const response = await signIn(values);
@@ -76,7 +90,9 @@ const AuthForm = ({ type }: { type: string }) => {
         </div>
       </header>
       {user ? (
-        <div className="flex flex-col gap-4">{/* pladLink Component  */}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant={"primary"} />
+        </div>
       ) : (
         <>
           <Form {...form}>
@@ -101,7 +117,7 @@ const AuthForm = ({ type }: { type: string }) => {
                   </div>
                   <CustomInput
                     control={form.control}
-                    name={"address"}
+                    name={"address1"}
                     placeholder={"Enter your specific address"}
                     label={"Address"}
                     type="text"
@@ -132,14 +148,14 @@ const AuthForm = ({ type }: { type: string }) => {
                   <div className="flex gap-4">
                     <CustomInput
                       control={form.control}
-                      name={"dob"}
+                      name={"dateOfBirth"}
                       placeholder={"ex: yyyy-dd-mm"}
                       label={"Date of Birth"}
                       type="string"
                     />
                     <CustomInput
                       control={form.control}
-                      name={"snn"}
+                      name={"ssn"}
                       placeholder={"ex: 1234"}
                       label={"SSN"}
                       type="text"

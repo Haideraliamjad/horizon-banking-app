@@ -207,7 +207,7 @@ export const authFormSchema = (type: string) =>
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "last name required" }),
-    address:
+    address1:
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "address is required" }).max(50),
@@ -219,11 +219,11 @@ export const authFormSchema = (type: string) =>
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "postal code is required" }).max(6),
-    dob:
+    dateOfBirth:
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "date of birth is required" }),
-    snn:
+    ssn:
       type === "sign-in"
         ? z.string().optional()
         : z.string({ message: "ssn is required" }),
