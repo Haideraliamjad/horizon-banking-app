@@ -4,21 +4,16 @@ import { TotalBalancebox } from "../../../components/TotalBalancebox";
 import RightSideBar from "../../../components/RightSideBar";
 import { getLoggedInUser } from "../../../lib/actions/user.actions";
 import { getAccounts, getAccount } from "../../../lib/actions/bank.actions";
-
+import RecentTransactions from "../../../components/RecentTransactions";
 const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
   const loggedIn = await getLoggedInUser();
-  console.log(loggedIn);
   const accounts = await getAccounts({
     userId: loggedIn.$id,
   });
-  console.log(accounts);
   if (!accounts) return;
-
   const accountsData = accounts?.data;
   const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
-
   const account = await getAccount({ appwriteItemId });
-  console.log("Account Info", account);
   return (
     <section className="home">
       <div className="home-content">
@@ -35,7 +30,11 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
             totalCurrentBalance={accounts?.totalCurrentBalance}
           />
         </header>
-        RECENT_TRANSECTIONS
+        <RecentTransactions
+          accounts={accountsData}
+          transactions={account?.transactions}
+          appwriteItemId={appwriteItemId}
+        />
       </div>
       <RightSideBar
         user={loggedIn}
