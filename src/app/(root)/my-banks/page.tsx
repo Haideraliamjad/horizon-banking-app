@@ -9,6 +9,8 @@ const MyBanks = async () => {
     userId: loggedIn.$id,
   });
 
+  console.log("Page", accounts);
+
   return (
     <section className="flex ">
       <div className="my-banks">
